@@ -79,15 +79,18 @@ def generate_midi_sequence(ccc, fout):
             out, state = model.forward([token], state)
 
         if MIDI_MODE:  # Specific adjustments for MIDI mode
-            adjust_midi_output(out, occurrence, i)
+            # Generate the token before calling adjust_midi_output
+            token = pipeline.sample_logits(out, temperature=1.0, top_k=8, top_p=0.8)
+            
+            # Now call adjust_midi_output with the token as a parameter
+            adjust_midi_output(out, occurrence, i, token)
         
-        token = pipeline.sample_logits(out, temperature=1.0, top_k=8, top_p=0.8)
         if token == EOS_ID: break
 
         fout.write(TOKEN_SEP + tokenizer.decode([token]))
         fout.flush()
 
-def adjust_midi_output(out, occurrence, i):
+def adjust_midi_output(out, occurrence, i, token):
     for n in occurrence:
         out[n] -= (0 + occurrence[n] * 0.5)
     out[0] += (i - 2000) / 500  # Adjust length bias
