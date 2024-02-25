@@ -69,10 +69,10 @@ def generate_continuation_from_piano_midi(input_sequence, trial=1):
         fout.write(' <end>')
         fout.close()
 
-def generate_midi_sequence(ccc, fout):
+def generate_midi_sequence(ccc, fout, max_tokens=2048):
     occurrence = {}
     state = None
-    for i in range(4096):
+    for i in range(max_tokens):
         if i == 0:
             out, state = model.forward(tokenizer.encode(ccc), state)
         else:
