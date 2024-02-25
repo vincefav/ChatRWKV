@@ -53,7 +53,7 @@ def generate_unconditioned_midi(trial=1):
         fout = open(f"unconditioned_midi_{TRIAL}.txt", "w")
         fout.write(ccc_output)
 
-        generate_midi_sequence(ccc, fout)
+        generate_midi_sequence(ccc, fout, max_tokens=2048)
         fout.write(' <end>')
         fout.close()
 
